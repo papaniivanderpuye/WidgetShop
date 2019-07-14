@@ -2,38 +2,24 @@
 Context (Handlers)
 '''
 
-from server.handlers.project import ProjectHandler
-from server.handlers.jsonapi import JsonApiHandler
+from server.handlers.widget import WidgetHandler
 from server.handlers.response import ResponseHandler
-from server.handlers.user import UserHandler
 
 
 class Context(object):
     def __init__(self):
-        self._project = None
-        self._jsonapi = None
+        self._widget = None
         self._response = None
-        self._user = None
 
     @property
-    def project(self):
-        if not self._project:
-            raise NotImplementedError("No Projects Handler Exists")
-        return self._project
+    def widget(self):
+        if not self._widget:
+            raise NotImplementedError("No Widget Handler Exists")
+        return self._widget
 
     @project.setter
     def project(self, handler):
-        self._project = handler
-
-    @property
-    def jsonapi(self):
-        if not self._jsonapi:
-            raise NotImplementedError("No JSON API Handler Exists")
-        return self._jsonapi
-
-    @jsonapi.setter
-    def jsonapi(self, handler):
-        self._jsonapi = handler
+        self._widget = handler
 
     @property
     def response(self):
@@ -44,13 +30,3 @@ class Context(object):
     @response.setter
     def response(self, handler):
         self._response = handler
-
-    @property
-    def user(self):
-        if not self._user:
-            raise NotImplementedError("No User Handler Exists")
-        return self._user
-
-    @user.setter
-    def user(self, handler):
-        self._user = handler
