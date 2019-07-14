@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<project name="autokpi">
+    <buildnumber />
+    <property name="name" value="autokpi" />
+    <property name="version" value="1.4.1" />
+    <property name="release" value="${build.number}" />
+    <property name="build" value="${version}-${release}" />
+    <property name="build.dir" value="/tmp/${name}-${build}" />
+    <property name="rpm.buildroot" value="${build.dir}/rpm" />
+    <property name="rpm.summary" value="TES Automation KPI" />
+    <property name="rpm.arch" value="noarch" />
+    <property name="rpm.source" value="${name}-${version}.tar.gz" />
+    <property name="dir.packages" value="packages" />
+
+    <!--
+    Clean previous build directory
+    -->
+    <target name="clean-build" >
+        <delete dir="${build.dir}" />
+    </target>
+
+    <!--
+    Initalize the build and packages directory
+    -->
+    <target name="init-build" depends="clean-build" >
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${dir.packages}" />
+    </target>
+
+    <!--
+    Build the source tarball of the source
+    -->
+    <target name="tar"
+        description="Create release tarball">
+        <mkdir dir="${build.dir}/${name}-${version}" />
+        <copy todir="${build.dir}/${name}-${version}">
+            <fileset dir="${basedir}" followsymlinks="false">
+                <exclude name="**/*.pyc" />
+                <exclude name="**/*.pyo" />
+                <include name="bin/" />
+                <include name="api/" />
+                <include name="etc/" />
+                <include name="server/" />
+                <include name="static/dist/" />
+                <include name="static/js/" />
+                <include name="static/*.html" />
+                <include name="static/*.js" />
+                <include name="static/*.json" />
+            </fileset>
+        </copy>
+        <tar destfile="${build.dir}/${name}-${version}.tar.gz" compression="gzip"
+             basedir="${build.dir}" includes="${name}-${version}/" />
+        <delete dir="${build.dir}/${name}-${version}" />
+    </target>
+
+    <!--
+    Package the project in an RPM
+    -->
+    <target name="rpm" depends="tar" description="Create release RPM">
+        <!-- Prep the RPM build directories -->
+        <mkdir dir="${rpm.buildroot}/BUILD" />
+        <mkdir dir="${rpm.buildroot}/RPMS" />
+        <mkdir dir="${rpm.buildroot}/SRPMS" />
+        <mkdir dir="${rpm.buildroot}/SOURCES" />
+        <mkdir dir="${rpm.buildroot}/SPECS" />
+        <!-- Copy source tarball into RPM build dir -->
+        <copy todir="${rpm.buildroot}/SOURCES">
+            <fileset dir="${build.dir}">
+                <include name="*.tar.gz" />
+            </fileset>
+        </copy>
+        <!-- Copy the spec file and replace tokens -->
+        <copy file="${basedir}/build/${name}.spec" todir="${rpm.buildroot}/SPECS" >
+            <filterchain>
+                <replacetokens>
+                    <token key="name" value="${name}" />
+                    <token key="version" value="${version}" />
+                    <token key="release" value="${release}" />
+                    <token key="rpm.summary" value="${rpm.summary}" />
+                    <token key="rpm.arch" value="${rpm.arch}" />
+                    <token key="rpm.source" value="${rpm.source}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <!-- Build the RPM -->
+        <exec executable="rpmbuild" >
+            <arg value="-bb" />
+            <arg line="--define='%_topdir ${rpm.buildroot}'" />
+            <arg value="${rpm.buildroot}/SPECS/${name}.spec" />
+        </exec>
+        <fileset id="new-rpm-list" dir="${rpm.buildroot}/RPMS/${rpm.arch}">
+            <include name="**/*.rpm" />
+        </fileset>
+
+        <!-- Send packages to atlas -->
+        <copy todir="/tmp/atlas/noarch/development/${name}_${version}_${release}" >
+            <fileset refid="new-rpm-list" />
+        </copy>
+        <exec executable="atlas_commit">
+            <arg value="-d" />
+            <arg value="/tmp/atlas/noarch/development/${name}_${version}_${release}" />
+        </exec>
+        <exec executable="atlas_commit_production">
+            <arg value="-d" />
+            <arg value="/tmp/atlas/noarch/development/${name}_${version}_${release}" />
+        </exec>
+
+        <!-- Cleanup list of RPMs and echo -->
+        <pathconvert pathsep="${line.separator}" property="new-rpms" refid="new-rpm-list" >
+            <mapper type="flatten" />
+        </pathconvert>
+        <echo> </echo>
+        <echo>RPMS Created:</echo>
+        <echo>${new-rpms}</echo>
+    </target>
+</project>

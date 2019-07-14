@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# post_install
+#
+# Used to complete post install steps, including updating apache configs
+#
+# Created: 9/7/2018
+# Updated: 10/12/2018
+#    Updated ctl to reflect changes to autokpictl
+#
+# Authors: Tim Rexer
+#
+
+touch /var/log/autokpi.log
+chmod 777 /var/log/autokpi.log
+
+if ! grep -Fxq "apache 0.1" /var/lib/autokpi/apache
+then
+  echo "Overwriting default apache config"
+  mkdir -p /var/lib/autokpi
+  mv /app/platform/autokpi/bin/welcome.conf /etc/httpd/conf.d/welcome.conf
+  echo "IncludeOptional vhosts.d/*.conf" >> /etc/httpd/conf/httpd.conf
+  touch /var/lib/autokpi/apache
+  echo "apache 0.1" > /var/lib/autokpi/apache
+fi
+
+if ! grep -Fxq "ctl 2.0" /var/lib/autokpi/autokpi
+then
+  cp /app/platform/autokpi/bin/autokpictl /usr/sbin/autokpictl
+  chmod 755 /usr/sbin/autokpictl
+  cp /app/platform/autokpi/app/etc/autokpictl.man /usr/share/man/man8/autokpictl.8
+  gzip /usr/share/man/man8/autokpictl.8
+  echo "ctl 2.0" > /var/lib/autokpi/autokpi
+fi

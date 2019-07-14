@@ -1,0 +1,38 @@
+.\" Manapage for autokpictl.
+.\" Contact TES_Automation_and_Strategy@comcast.com
+.TH man 8 "31 Aug 2018" "1.0" "autokpictl man page"
+.SH NAME
+       autokpictl - autokpi API Control Interface
+.SH SYNOPSIS
+       Most commands for autokpictl are simple, one-word commands, defined below.  The exception being prod which allows for an option.
+
+       autokpictl command
+
+.SH SUMMARY
+       autokpictl is a front end to autokpi api server. It can be used to put the server in various states including start, stop, and restarting all related dependencies.
+
+.SH OPTIONS
+       status
+              Displays a brief status report for apache using systemd.
+
+       stop
+              Stops the Apache httpd daemon and uswgi interface.
+
+       start
+              Start the Apache httpd daemon and uswgi interface.
+
+       restart
+              Restarts both the Apache httpd daemon and uswgi interface.
+
+       graceful
+              Gracefully restarts the Apache httpd daemon and reloads the uswgi interface.
+
+       graceful-stop
+              Gracefully stops the Apache httpd daemon and reloads the uswgi interface.
+
+       configtest
+              Run a configuration file syntax test for the apache configuration. It parses the configuration files and either reports Syntax Ok or
+              detailed information about the particular syntax error. This is equivalent to apachectl -t or apachectp configtest.
+
+.SH SEE ALSO
+       apachectl(8)
