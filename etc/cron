@@ -1,8 +1,0 @@
-crontab << EOF
-SHELL=/bin/bash 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin 
-MAILTO=root HOME=/  
-#cron for emailing weekly reports
-#Replace 'weekly_report_email' with the the new file path. Example 'file/path/to/weekly_report_email'
-* * * * * bash weekly_report_email.sh
-EOF

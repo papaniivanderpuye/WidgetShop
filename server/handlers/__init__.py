@@ -2,24 +2,24 @@
 Context (Handlers)
 '''
 
-from server.handlers.widget import WidgetHandler
+from server.handlers.widget_order import WidgetOrderHandler
 from server.handlers.response import ResponseHandler
 
 
 class Context(object):
     def __init__(self):
-        self._widget = None
+        self._widget_order = None
         self._response = None
 
     @property
     def widget(self):
-        if not self._widget:
-            raise NotImplementedError("No Widget Handler Exists")
-        return self._widget
+        if not self._widget_order:
+            raise NotImplementedError("No WidgetOrder Handler Exists")
+        return self._widget_order
 
-    @project.setter
-    def project(self, handler):
-        self._widget = handler
+    @widget.setter
+    def widget(self, handler):
+        self._widget_order = handler
 
     @property
     def response(self):

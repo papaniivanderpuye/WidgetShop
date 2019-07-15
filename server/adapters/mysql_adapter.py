@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from server.exceptions import GenericDatabaseException
 
-LOGGER = logging.getLogger('autokpi')
+LOGGER = logging.getLogger('widget_shop')
 
 
 class MysqlAdapter(object):

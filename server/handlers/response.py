@@ -4,7 +4,7 @@ import logging
 from flask import jsonify
 from server.exceptions import *
 
-LOGGER = logging.getLogger('autokpi')
+LOGGER = logging.getLogger('widget_shop')
 
 '''
 ASSUMES JSONAPI Results where applicable, & returns JSONAPI valid erros.
@@ -35,6 +35,8 @@ class ResponseHandler(object):
                     links['self'] = request_url + result[1]
 
                     return jsonify({
+                        'success': True,
+                        'id': result[1],
                         'links' : links
                         }), 201
                 else:

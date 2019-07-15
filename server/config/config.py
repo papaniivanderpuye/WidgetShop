@@ -36,7 +36,7 @@ class Config(BaseConfigHandler):
                     }
                 },
                 'loggers': {
-                    'autokpi': {
+                    'widget_shop': {
                         'handlers': ['main'],
                         'level': self.LOG_LEVEL
                     }

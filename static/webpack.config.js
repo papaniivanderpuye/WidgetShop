@@ -3,9 +3,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
     entry:{
-        index: ['babel-polyfill', __dirname + '/js/index.jsx'],
-        unauthorized: ['babel-polyfill', __dirname + '/js/unauthorized.jsx']
-
+        index: ['babel-polyfill', __dirname + '/js/index.jsx']
     },
     output: {
         path: __dirname + '/dist',

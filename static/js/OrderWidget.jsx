@@ -36,10 +36,12 @@ export default class OrderWidget extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.handleChangeDate = this.handleChangeDate.bind(this);
+    this.handleChangeNoTarget = this.handleChangeNoTarget.bind(this);
     this.getEditingPanel = this.getEditingPanel.bind(this);
     this.handleFormNext = this.handleFormNext.bind(this);
     this.handleSelectNavItem = this.handleSelectNavItem.bind(this);
+    this.sendWidget = this.sendWidget.bind(this);
+    this.refreshPage = this.refreshPage.bind(this);
 
     this.state = {
       widgetType: null,
@@ -47,8 +49,56 @@ export default class OrderWidget extends React.Component {
       widgetQuantity: null,
       dateNeededBy: null,
       showLoading: false,
-      selectedKey: 1
+      selectedKey: 1,
+      showFormErrors: [],
+      isSaving: false,
+      widget_order_id: null,
+      showModal: false,
     };
+  }
+
+  sendWidget() {
+    var data = {};
+    var submitUrl = "api/v1/widget_order";
+    var httpMethod = "POST";
+    var actionTaken = "created";
+
+    // Prepare payload
+    data.type = this.state.widgetType;
+    data.color = this.state.widgetColor;
+    data.quantity = this.state.widgetQuantity;
+    data.date_needed_by = this.state.dateNeededBy
+      ? moment(this.state.dateNeededBy).format("YYYY-MM-DD HH:mm:ss")
+      : moment().format("YYYY-MM-DD HH:mm:ss");
+    var errorList = [];
+
+    $.ajax({
+      url: submitUrl,
+      type: httpMethod,
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      beforeSend: function() {
+        this.setState({ isSaving: true });
+      }.bind(this),
+      success: function(results) {
+        console.log(results);
+        this.setState({ showModal: true, widget_order_id:results.id });
+      }.bind(this),
+      error: function(xhr, textStatus, error) {
+        var errorMessageDict = {
+          id: 503,
+          msg: "A Database Error Occured, Please Contact Support"
+        };
+
+        var errMsg = JSON.parse(xhr.responseText)["title"];
+        var errCode = JSON.parse(xhr.responseText)["code"];
+
+        errorList.push(errMsg);
+      }.bind(this),
+      complete: function() {
+        this.setState({ isSaving: false, showFormErrors: errorList });
+      }.bind(this)
+    });
   }
 
   handleSelectNavItem(selectedKey) {
@@ -58,14 +108,13 @@ export default class OrderWidget extends React.Component {
   }
   handleChange(e) {
     const target = e.target;
-    const value = target.value;
+    const value = target ? target.value : e;
     const name = target.name;
-
     this.setState({
-      [name]: value
+      name: value
     });
   }
-  handleChangeDate(e, name) {
+  handleChangeNoTarget(e, name) {
     let change = {};
     change[name] = e;
     this.setState(change);
@@ -103,9 +152,9 @@ export default class OrderWidget extends React.Component {
               onChange={this.handleChange}
             >
               <option value="Select">Select</option>
-              <option value="Red">Red</option>
-              <option value="Blue">Blue</option>
-              <option value="Yellow">Yellow</option>
+              <option value="red">red</option>
+              <option value="blue">blue</option>
+              <option value="yellow">yellow</option>
             </FormControl>
           </FormGroup>
         );
@@ -114,7 +163,12 @@ export default class OrderWidget extends React.Component {
         currentForm = (
           <FormGroup className="animated animatedFadeInUp fadeInUp">
             <ControlLabel>Enter the {fieldTitle}</ControlLabel>
-            <NumericInput className="form-control" strict />
+            <NumericInput
+              className="form-control"
+              strict
+              value={fieldValue !== null ? fieldValue : 0}
+              onChange={e => this.handleChangeNoTarget(e, fieldName)}
+            />
           </FormGroup>
         );
         break;
@@ -127,7 +181,7 @@ export default class OrderWidget extends React.Component {
               id={fieldName + "_" + fieldType}
               name={fieldName}
               selected={fieldValue ? fieldValue : new Date()}
-              onChange={e => this.handleChangeDate(e, fieldName)}
+              onChange={e => this.handleChangeNoTarget(e, fieldName)}
             />
           </FormGroup>
         );
@@ -181,6 +235,9 @@ export default class OrderWidget extends React.Component {
     });
   }
 
+  refreshPage(){
+    window.location.reload();
+}
 
   render() {
     var stateDict = this.state;
@@ -242,6 +299,46 @@ export default class OrderWidget extends React.Component {
       </Nav>
     );
 
+    var errorAlert = (
+      <Alert bsStyle="danger" className="form-errors animated shake">
+        <strong>The following errors occured:</strong>
+        <br />
+        <ul>
+          {this.state.showFormErrors.map(
+            function(row) {
+              return <li key={row}>{row}</li>;
+            }.bind(this)
+          )}
+        </ul>
+      </Alert>
+    );
+
+    var orderAgainButton = (
+
+        <Button bsStyle="default" onClick={this.refreshPage} >Order Again</Button>
+
+    );
+
+
+    var successPopup = (
+      <Modal show={this.state.showModal} onHide={this.handleClose}>
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Widget Order</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Widget has been orderd succesfully!
+          </p>
+          <p>
+            Your Order ID: {this.state.widget_order_id}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          {orderAgainButton}
+        </Modal.Footer>
+      </Modal>
+    );
+
     return (
       <div className="main-container animated animatedFadeInUp fadeInUp">
         {navInstance}
@@ -260,6 +357,7 @@ export default class OrderWidget extends React.Component {
                 />
               </div>
             ) : null}
+            {this.state.showFormErrors.length > 0 ? errorAlert : null}
             <div key={this.state.selectedKey - 1}>
               {editingPanelList[this.state.selectedKey - 1]}
             </div>
@@ -274,7 +372,7 @@ export default class OrderWidget extends React.Component {
               onClick={
                 this.state.selectedKey < editingPanelList.length
                   ? this.handleFormNext
-                  : this.sendMilestone
+                  : this.sendWidget
               }
             >
               {this.state.selectedKey < editingPanelList.length
@@ -287,12 +385,13 @@ export default class OrderWidget extends React.Component {
                 bsStyle={"primary"}
                 type="button"
                 name="submit"
-                onClick={this.sendMilestone}
+                onClick={this.sendWidget}
               >
                 Submit
               </Button>
             ) : null}
           </form>
+          {successPopup}
         </div>
       </div>
     );

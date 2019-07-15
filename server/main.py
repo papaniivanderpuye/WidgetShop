@@ -1,109 +1,111 @@
 #!/usr/bin/python2.7
 '''
-Automation Team KPI API
+Widget Shop API
 '''
 import argparse
-import datetime
 import logging
 import logging.config
 import os
-import random
 import sys
-# Auth Requirements
-from functools import wraps
+from datetime import datetime
+from flask import (Flask, make_response,
+                   render_template, request)
 
-import deprecation
-from flask import (Flask, abort, jsonify, make_response, redirect,
-                   render_template, request, send_file, url_for)
-
-# Auto KPI Requirements
+# Widget Shop Requirements
 sys.path.insert(0, os.path.dirname(
     os.path.realpath(__file__)) + '/../')
-import server.application as autokpi_app
+import server.application as widget_app
 from server.adapters.mysql_adapter import MysqlAdapter
-from server.common import get_auth_context, log_error, log_exception
 from server.config.config import Config
-from server.domain import Widget
+from server.domain import WidgetOrder
 from server.exceptions import *
-from server.handlers import (Context, WidgetHandler)
-from server.utils import get_version
-
-
-# Flask requirements
+from server.handlers import (
+    Context, WidgetOrderHandler, ResponseHandler)
 
 
 '''APP CONFIG'''
-PARSER = argparse.ArgumentParser(description='TESLAB API')
+PARSER = argparse.ArgumentParser(description='WIDGET_APP API')
 PARSER.add_argument('-p', '--port', dest='port',
                     type=int, help='Port', default=1996)
-PARSER.add_argument('-d', '--development', dest='environ',
-                    help='Force development environment',
-                    action='store_true')
 ARGS = PARSER.parse_args()
 
 CONFIG = Config.Development()
 logging.config.dictConfig(CONFIG.LOG_CONFIG)
-LOGGER = logging.getLogger('autokpi')
-LOGGER.info("Starting AutoKPI Application")
+LOGGER = logging.getLogger('widget_shop')
+LOGGER.info("Starting Widget Shop Application")
 
 # Version 1 Route
-version_route = 'v1'
+api = '/api'
+version_route = '/v1'
 
 
 def get_handlers():
     context = Context()
     adapter = MysqlAdapter(CONFIG.DB_CONN)
-    context.widget = WidgetHandler(adapter)
+    context.widget_order = WidgetOrderHandler(adapter)
     context.response = ResponseHandler()
     return context
 
 
 # Set global handlers to prevent too many connections
 HANDLER = get_handlers()
-
 app = Flask(__name__,
             static_folder="../static/dist",
             template_folder="../static")
 
-@app.route('/' + version_route + '/project/', methods=['POST'])
-def create_project():
+
+@app.route(api + version_route + '/widget_order', methods=['POST'])
+def create_widget_order():
     try:
-        type = _get_param(request, 'type')
+        type = _get_param(request, 'type', None)
         color = _get_param(request, 'color', None)
         quantity = _get_param(request, 'quantity', None)
         date_needed_by = _get_param(request, 'date_needed_by', None)
+        date_to_format = datetime.strptime(date_needed_by, '%Y-%m-%d %H:%M:%S')
+        formatted_date = date_to_format.strftime('%Y-%m-%d')
+        print(formatted_date)
 
-        widget = autokpi_app.map_data_to_obj(
-            Widget,
+        widget_order = widget_app.map_data_to_obj(
+            WidgetOrder,
             type=type,
             color=color,
             quantity=quantity,
-            date_needed_by=date_needed_by
+            date_needed_by=formatted_date
         )
-        results = autokpi_app.create_widget_order(
-            HANDLER, widget, username)
-        return autokpi_app.response(HANDLER, results, request.method, request.url)
+        results = widget_app.create_widget_order(
+            HANDLER, widget_order)
+        print(results)
+        return widget_app.response(HANDLER, results, request.method, request.url)
     except GenericDatabaseException as err:
         LOGGER.exception(err)
-        return autokpi_app.exception(HANDLER, GenericDatabaseException, request.method, 'widget')
+        return widget_app.exception(HANDLER, GenericDatabaseException, request.method, 'widget')
     except Exception as err:
         LOGGER.exception(err)
-        return autokpi_app.exception(HANDLER, GenericDatabaseException, request.method, 'widget')
+        return widget_app.exception(HANDLER, GenericDatabaseException, request.method, 'widget')
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index.html', methods=['GET', 'POST'])
 @app.route('/<path:path>', methods=['GET', 'POST'])
 def index(path=None):
     resp = make_response(render_template(
-        'index.html',
-        user_ntid=user_ntid,
-        user_fullname=user_fullname,
-        user_email=user_email,
-        rpm_ver=get_version()
+        'index.html'
     ))
     resp.headers.extend({
-                         'orig_url': request.url_root})
+        'orig_url': request.url_root})
     return resp
+
+
+def _get_param(req, param, default=None):
+    """ Return param from incoming payload """
+    if req.method == 'GET':
+        if req.args:
+            return req.args.get(param, default)
+    else:
+        if req.json:
+            return req.json.get(param, default)
+    return None
+
 
 if __name__ == "__main__":
     app.run(host='localhost', port=ARGS.port, debug=True)
