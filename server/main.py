@@ -57,13 +57,43 @@ app = Flask(__name__,
 
 @app.route(api + version_route + '/widget_order', methods=['POST'])
 def create_widget_order():
-    """This function stores widget order in the configured mysql database.
-    Returns
-    -------
-    flask.wrappers.Response
-        returns http response of the success of failure in storing the widget order.
+    """ Create Widget Order.
+    GET:
+        Summary: create widget order endpoint.
+        Description: save a widget order.
+        Parameters:
+        -----------
+            - name: type
+              in: json
+              description: type of widget
+              type: string
+              required: true
 
+            - name: color
+              in: json
+              description: color of widget
+              type: string
+              required: true
+
+            - name: quantity
+              in: json
+              description: quantity of widgets
+              type: int
+              required: true
+
+            - name: date_needed_by
+                in: json
+                description: date order should be delivered by
+                type: string
+                required: true
+        Responses:
+        ----------
+            200:
+                description: order saved, order number to be returned.
+            404:
+                order not saved, data is wrong.
     """
+
     try:
         type = _get_param(request, 'type', None)
         color = _get_param(request, 'color', None)
@@ -92,19 +122,40 @@ def create_widget_order():
 @app.route('/index.html', methods=['GET', 'POST'])
 @app.route('/<path:path>', methods=['GET', 'POST'])
 def index(path=None):
-    """This is the index function that returns the home page of the web app.
+    """ Go To Home Page.
+    GET/POST:
+        Summary: This is the index function that returns the home page of the web app.
+        Description:
+        Parameters
+        ----------
+        path : str
+            path of url. Adding this to redirect any wrong url path
+            back to index(the default is None).
 
-    Parameters
-    ----------
-    path : str
-        path of url. Adding this to redirect any wrong url path
-        back to index(the default is None).
+        Returns
+        -------
+        flask.wrappers.Response
+            returns http response of index html page.
 
-    Returns
-    -------
-    flask.wrappers.Response
-        returns http response of index html page.
+        """
+    """ Go to HomePage.
+        GET/POST:
+            summary: goes to homepage.
+            description: show homepage.
+            Parameters:
+            ----------
+                - name: path
+                  in: path
+                  description: is any path other than the ones previously defined on the script
+                  type: string
+                  required: false
 
+            Responses:
+            ----------
+                200:
+                    showing homepage.
+                404:
+                    not showing homepage.
     """
     resp = make_response(render_template(
         'index.html'

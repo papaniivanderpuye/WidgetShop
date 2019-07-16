@@ -1,5 +1,4 @@
-#!/usr/bin/python2.7
-# API UNIT TEST
+""" API Unit Testing """
 from nose.tools import *
 import requests
 

@@ -1,5 +1,4 @@
-#!/usr/bin/python2.7
-# Application UNIT TEST
+""" Application Unit Testing """
 import logging
 import logging.config
 import os
