@@ -43,7 +43,7 @@ start inside the outermost folder of the directory(Which should be called Widget
 - `npm run build `
 - `cd ../`
 - `pip install -r server/requirements/requirements.txt`
-- `sudo touch /var/log/widget_shop.log`
+- `sudo touch /var/log/widget_shop.log` __for log file__
 - `sudo chmod 777 /var/log/widget_shop.log`
 
 ### run application:
