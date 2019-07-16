@@ -13,7 +13,7 @@ In current directory:
 ## Setup
 You will need Python2.7, Node.JS, and MySQL Server installed on your laptop
 
-## setup database:
+## Setup Database:
 you need to start a MySQL server locally on your laptop
 
 access credentials to the database should be:
@@ -29,7 +29,7 @@ You also need to create a database and the required procedures in the server by 
 The python Flask app will access the server using those credentials if you want to the connection configuration, look at:
 -`server/config/config.py`
 
-## setup web app:
+## Setup Web App:
 - `npm install --prefix static`
 - `npm run build --prefix static`
 - `pip install -r server/requirements/requirements.txt`
@@ -39,7 +39,7 @@ run application:
 
 The website will be in the url: http://localhost:1996/
 
-## tests:
+## Tests:
 ### unit tests for application
    - `cd server/unit_tests/`
    - `nosetests --verbosity=2`
