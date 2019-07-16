@@ -27,23 +27,30 @@ access credentials to the database should be:
  - charset: 'utf8'
 
 You also need to create a database and the required procedures in the server by running MySQL commands from the two files:
+from the outermost folder of the directory
 - `db/create_tables.sql`
 - `db/Procedures.sql`
 
 The python Flask app will access the server using those credentials. If you want to look at the connection configuration, look at:
+from the outermost folder of the directory
 - `server/config/config.py`
 
 ## Setup Web App:
-- `npm install --prefix static`
-- `npm run build --prefix static`
+start inside the outermost folder of the directory
+- `cd static`
+- `npm install`
+- `npm run build `
+- `cd ../`
 - `pip install -r server/requirements/requirements.txt`
 
 run application:
+start inside the outermost folder of the directory
  `python2.7 server/main.py`
 
 The website will be in the url: http://localhost:1996/
 
 ## Tests:
 ### unit tests for application
+start inside the outermost folder of the directory
    - `cd server/unit_tests/`
    - `nosetests --verbosity=2`
