@@ -26,7 +26,7 @@ You also need to create a database and the required procedures in the server by 
 - `db/create_tables.sql`
 - `db/Procedures.sql`
 
-The python Flask app will access the server using those credentials if you want to the connection configuration, look at:
+The python Flask app will access the server using those credentials. If you want to look at the connection configuration, look at:
 -`server/config/config.py`
 
 ## Setup Web App:
