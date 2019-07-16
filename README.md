@@ -13,9 +13,9 @@ In current directory:
 ## Setup
 You will need Python2.7, Node.JS, and MySQL Server installed on your laptop
 Here are some websites to download these:
-Python2.7: https://www.python.org/downloads/release/python-2716/
-Node.JS: https://nodejs.org/en/download/
-MySQL: https://dev.mysql.com/downloads/installer/
+- Python2.7: https://www.python.org/downloads/release/python-2716/
+- Node.JS: https://nodejs.org/en/download/
+- MySQL: https://dev.mysql.com/downloads/installer/
 
 ## Setup Database:
 you need to start a MySQL server locally on your laptop
