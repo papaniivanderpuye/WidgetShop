@@ -61,16 +61,13 @@ def create_widget_order():
         color = _get_param(request, 'color', None)
         quantity = _get_param(request, 'quantity', None)
         date_needed_by = _get_param(request, 'date_needed_by', None)
-        date_to_format = datetime.strptime(date_needed_by, '%Y-%m-%d %H:%M:%S')
-        formatted_date = date_to_format.strftime('%Y-%m-%d')
-        print(formatted_date)
 
         widget_order = widget_app.map_data_to_obj(
             WidgetOrder,
             type=type,
             color=color,
             quantity=quantity,
-            date_needed_by=formatted_date
+            date_needed_by=date_needed_by
         )
         results = widget_app.create_widget_order(
             HANDLER, widget_order)

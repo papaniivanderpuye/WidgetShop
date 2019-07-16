@@ -7,30 +7,26 @@ import {
   ControlLabel,
   FormControl,
   FormGroup,
-  ProgressBar,
   Nav,
   NavItem,
   Alert,
-  Col,
-  HelpBlock,
-  Label,
   Modal,
-  Row,
   Well
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import ReactLoading from "react-loading";
 import moment from "moment";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Slider, { Range } from "rc-slider";
-import "rc-slider/assets/index.css";
 import NumericInput from "react-numeric-input";
-
+import { lazyload } from 'react-lazyload';
+import { addDays} from "./Common";
 var $ = require("jquery");
-const USER_FULL_NAME = document
-  .getElementById("content")
-  .getAttribute("user_fullname");
+
+@lazyload({
+  height: 200,
+  once: true,
+  offset: 100
+})
 
 export default class OrderWidget extends React.Component {
   constructor(props) {
@@ -42,6 +38,7 @@ export default class OrderWidget extends React.Component {
     this.handleSelectNavItem = this.handleSelectNavItem.bind(this);
     this.sendWidget = this.sendWidget.bind(this);
     this.refreshPage = this.refreshPage.bind(this);
+    this.validateForm = this.validateForm.bind(this);
 
     this.state = {
       widgetType: null,
@@ -53,8 +50,39 @@ export default class OrderWidget extends React.Component {
       showFormErrors: [],
       isSaving: false,
       widget_order_id: null,
-      showModal: false,
+      showModal: false
     };
+  }
+
+  validateForm() {
+    var errorList = [];
+    var widgetType = this.state.widgetType;
+    var widgetColor = this.state.widgetColor;
+    var widgetQuantity = this.state.widgetQuantity;
+    var dateNeededBy = this.state.dateNeededBy;
+
+    if (!(widgetType) || widgetType == "Select"){
+        errorList.push("Please Select Widget Type(Must be Widget, Widget Pro, or Widget Xtreme)");
+    }
+
+    if (!(widgetColor) || widgetColor == "Select"){
+        errorList.push("Please Select Widget Color(Must be red, blue, or yellow)");
+    }
+
+    if (!(widgetQuantity) || widgetQuantity == 0){
+        errorList.push("Please Select Widget Quantity (Must be greater than zero)");
+    }
+
+    if (!(dateNeededBy)){
+        errorList.push("Please Select a Date to Deliver By (Must be at least a week from today)");
+    }
+
+    if (errorList.length > 0 ) {
+        this.setState({showFormErrors: errorList });
+    }
+    else {
+        this.sendWidget();
+    }
   }
 
   sendWidget() {
@@ -68,8 +96,8 @@ export default class OrderWidget extends React.Component {
     data.color = this.state.widgetColor;
     data.quantity = this.state.widgetQuantity;
     data.date_needed_by = this.state.dateNeededBy
-      ? moment(this.state.dateNeededBy).format("YYYY-MM-DD HH:mm:ss")
-      : moment().format("YYYY-MM-DD HH:mm:ss");
+      ? moment(this.state.dateNeededBy).format("YYYY-MM-DD")
+      : moment().format("YYYY-MM-DD");
     var errorList = [];
 
     $.ajax({
@@ -81,19 +109,12 @@ export default class OrderWidget extends React.Component {
         this.setState({ isSaving: true });
       }.bind(this),
       success: function(results) {
-        console.log(results);
-        this.setState({ showModal: true, widget_order_id:results.id });
+        this.setState({ showModal: true, widget_order_id: results.id });
       }.bind(this),
       error: function(xhr, textStatus, error) {
-        var errorMessageDict = {
-          id: 503,
-          msg: "A Database Error Occured, Please Contact Support"
-        };
-
-        var errMsg = JSON.parse(xhr.responseText)["title"];
-        var errCode = JSON.parse(xhr.responseText)["code"];
-
-        errorList.push(errMsg);
+        var errorList = [];
+        var defaultMsg = "A Database Error Occured, Please Contact Support";
+        errorList.push(defaultMsg);
       }.bind(this),
       complete: function() {
         this.setState({ isSaving: false, showFormErrors: errorList });
@@ -107,15 +128,24 @@ export default class OrderWidget extends React.Component {
     });
   }
   handleChange(e) {
+
     const target = e.target;
-    const value = target ? target.value : e;
+    const value = target.value;
     const name = target.name;
     this.setState({
-      name: value
+      [name]: value
     });
   }
   handleChangeNoTarget(e, name) {
     let change = {};
+    change[name] = e;
+    this.setState(change);
+  }
+  handleChangeQuantity(e, name) {
+    let change = {};
+    if (e < 0){
+        e = 0;
+    }
     change[name] = e;
     this.setState(change);
   }
@@ -162,12 +192,13 @@ export default class OrderWidget extends React.Component {
       case "widget_quantity":
         currentForm = (
           <FormGroup className="animated animatedFadeInUp fadeInUp">
-            <ControlLabel>Enter the {fieldTitle}</ControlLabel>
+            <ControlLabel>Enter the {fieldTitle} (Must be greater than zero)</ControlLabel>
+            <br/>
             <NumericInput
               className="form-control"
               strict
               value={fieldValue !== null ? fieldValue : 0}
-              onChange={e => this.handleChangeNoTarget(e, fieldName)}
+              onChange={e => this.handleChangeQuantity(e, fieldName)}
             />
           </FormGroup>
         );
@@ -175,13 +206,16 @@ export default class OrderWidget extends React.Component {
       case "date":
         currentForm = (
           <FormGroup className="animated animatedFadeInUp fadeInUp">
-            <ControlLabel>Enter the {fieldTitle}</ControlLabel>
+            <ControlLabel>Enter the {fieldTitle} (Must be at least 1 week from today)</ControlLabel>
+            <br/>
             &nbsp;
             <DatePicker
               id={fieldName + "_" + fieldType}
               name={fieldName}
-              selected={fieldValue ? fieldValue : new Date()}
+              selected={fieldValue}
               onChange={e => this.handleChangeNoTarget(e, fieldName)}
+              minDate={addDays(new Date(), 7)}
+              placeholderText="Click to select a date"
             />
           </FormGroup>
         );
@@ -235,9 +269,9 @@ export default class OrderWidget extends React.Component {
     });
   }
 
-  refreshPage(){
+  refreshPage() {
     window.location.reload();
-}
+  }
 
   render() {
     var stateDict = this.state;
@@ -314,11 +348,10 @@ export default class OrderWidget extends React.Component {
     );
 
     var orderAgainButton = (
-
-        <Button bsStyle="default" onClick={this.refreshPage} >Order Again</Button>
-
+      <Button bsStyle="default" onClick={this.refreshPage}>
+        Order Again
+      </Button>
     );
-
 
     var successPopup = (
       <Modal show={this.state.showModal} onHide={this.handleClose}>
@@ -326,16 +359,10 @@ export default class OrderWidget extends React.Component {
           <Modal.Title>Widget Order</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            Widget has been orderd succesfully!
-          </p>
-          <p>
-            Your Order ID: {this.state.widget_order_id}
-          </p>
+          <p>Widget has been orderd succesfully!</p>
+          <p>Your Order ID: {this.state.widget_order_id}</p>
         </Modal.Body>
-        <Modal.Footer>
-          {orderAgainButton}
-        </Modal.Footer>
+        <Modal.Footer>{orderAgainButton}</Modal.Footer>
       </Modal>
     );
 
@@ -372,7 +399,7 @@ export default class OrderWidget extends React.Component {
               onClick={
                 this.state.selectedKey < editingPanelList.length
                   ? this.handleFormNext
-                  : this.sendWidget
+                  : this.validateForm
               }
             >
               {this.state.selectedKey < editingPanelList.length
@@ -385,7 +412,7 @@ export default class OrderWidget extends React.Component {
                 bsStyle={"primary"}
                 type="button"
                 name="submit"
-                onClick={this.sendWidget}
+                onClick={this.validateForm}
               >
                 Submit
               </Button>
