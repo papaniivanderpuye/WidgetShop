@@ -1,4 +1,5 @@
 #!/usr/bin/python2.7
+
 '''
 Widget Shop API
 '''
@@ -71,7 +72,6 @@ def create_widget_order():
         )
         results = widget_app.create_widget_order(
             HANDLER, widget_order)
-        print(results)
         return widget_app.response(HANDLER, results, request.method, request.url)
     except GenericDatabaseException as err:
         LOGGER.exception(err)

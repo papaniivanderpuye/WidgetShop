@@ -1,2 +1,4 @@
 static/node_modules
 static/lib/node_modules
+*.pyc
+__pycache__
