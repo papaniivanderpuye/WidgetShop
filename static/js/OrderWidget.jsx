@@ -39,6 +39,7 @@ export default class OrderWidget extends React.Component {
     this.sendWidget = this.sendWidget.bind(this);
     this.refreshPage = this.refreshPage.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.closeModal = this.closeModal.bind(this);
 
     this.state = {
       widgetType: null,
@@ -52,6 +53,10 @@ export default class OrderWidget extends React.Component {
       widget_order_id: null,
       showModal: false
     };
+  }
+
+  closeModal() {
+      this.setState({showModal: false});
   }
 
   validateForm() {
@@ -353,16 +358,26 @@ export default class OrderWidget extends React.Component {
       </Button>
     );
 
+    var closeModalButton = (
+      <Button bsStyle='default' onClick={this.closeModal}>
+        Close Popup
+      </Button>
+    );
+
     var successPopup = (
-      <Modal show={this.state.showModal} onHide={this.handleClose}>
-        <Modal.Header closeButton={false}>
+      <Modal show={this.state.showModal}>
+        <Modal.Header closeButton>
           <Modal.Title>Widget Order</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>Widget has been orderd succesfully!</p>
           <p>Your Order ID: {this.state.widget_order_id}</p>
         </Modal.Body>
-        <Modal.Footer>{orderAgainButton}</Modal.Footer>
+        <Modal.Footer>
+            <div className="divider" /> {closeModalButton}
+            <div className="divider" /> {orderAgainButton}
+        </Modal.Footer>
+
       </Modal>
     );
 
