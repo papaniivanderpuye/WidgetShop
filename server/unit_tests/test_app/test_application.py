@@ -2,7 +2,6 @@
 # Application UNIT TEST
 import logging
 import logging.config
-import mock
 import os
 import sys
 import unittest
