@@ -14,24 +14,24 @@ setup database:
 you need to create a MySQL server locally on your laptop
 
 access credentials to the database should be:
-    user: 'root'
-    password: 'PaNW^?DV9"zT,!^`'
-    host: 'localhost'
-    charset: 'utf8'
+ - user: 'root'
+ - password: 'PaNW^?DV9"zT,!^`'
+ - host: 'localhost'
+ - charset: 'utf8'
 
-You should create a database and the required procedures in the server by running MySQL commands from the two files:
-db/create_tables.sql
-db/Procedures.sql
+You also need to create a database and the required procedures in the server by running MySQL commands from the two files:
+-`db/create_tables.sql`
+-`db/Procedures.sql`
 
 The python Flask app will access the server using those credentials if you want to the connection configuration, look at:
 server/config/config.py
 
 setup web app:
-npm install --prefix static
-npm run build --prefix static
-pip install -r server/requirements/requirements.txt
+-`npm install --prefix static`
+-`npm run build --prefix static`
+-`pip install -r server/requirements/requirements.txt`
 
 run application:
-python2.7 server/main.py
+`python2.7 server/main.py`
 
 The website will be in the url: http://localhost:1996/
