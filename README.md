@@ -35,3 +35,8 @@ run application:
  `python2.7 server/main.py`
 
 The website will be in the url: http://localhost:1996/
+
+## tests:
+## unit tests for application
+   - `cd server/unit_tests/`
+   - `nosetests --verbosity=2`
