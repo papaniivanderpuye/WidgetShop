@@ -6,7 +6,7 @@ Widgy is a Widget Shop web application with a single form that allows users to o
 - The date by which the widgets are needed (which must be at least 1 week from the date the user is filling out the form)
 - The type of widget the customer wants (Options are: "Widget", "Widget Pro" and "Widget Xtreme")
 
-It displayed a confirmation message after your order.
+Your order will be saaved in a database and it displays a confirmation message after you order.
 
 In current directory:
 
