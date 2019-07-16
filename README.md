@@ -36,16 +36,20 @@ from the outermost folder of the directory
 - `server/config/config.py`
 
 ## Setup Web App:
-start inside the outermost folder of the directory
+start inside the outermost folder of the directory and run the commands in the terminal
+(you may need to be a root user to perform some of these commands)
 - `cd static`
 - `npm install`
 - `npm run build `
 - `cd ../`
 - `pip install -r server/requirements/requirements.txt`
 
-run application:
-start inside the outermost folder of the directory
- `python2.7 server/main.py`
+### run application:
+Start inside the outermost folder of the directory and run the commands in the terminal
+(you may need to be a root user to perform some of these commands)
+- `sudo touch /var/log/widget_shop.log`
+- `sudo chmod 777 /var/log/widget_shop.log`
+- `python2.7 server/main.py`
 
 The website will be in the url: http://localhost:1996/
 
