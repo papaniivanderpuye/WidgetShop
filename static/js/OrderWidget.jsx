@@ -1,7 +1,7 @@
 /**Widget Order**/
 
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 import {
   Button,
   ControlLabel,
@@ -12,15 +12,15 @@ import {
   Alert,
   Modal,
   Well
-} from "react-bootstrap";
-import ReactLoading from "react-loading";
-import moment from "moment";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import NumericInput from "react-numeric-input";
+} from 'react-bootstrap';
+import ReactLoading from 'react-loading';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import NumericInput from 'react-numeric-input';
 import { lazyload } from 'react-lazyload';
-import { addDays} from "./Common";
-var $ = require("jquery");
+import { addDays} from './Common';
+var $ = require('jquery');
 
 @lazyload({
   height: 200,
@@ -61,20 +61,20 @@ export default class OrderWidget extends React.Component {
     var widgetQuantity = this.state.widgetQuantity;
     var dateNeededBy = this.state.dateNeededBy;
 
-    if (!(widgetType) || widgetType == "Select"){
-        errorList.push("Please Select Widget Type(Must be Widget, Widget Pro, or Widget Xtreme)");
+    if (!(widgetType) || widgetType == 'Select'){
+        errorList.push('Please Select Widget Type(Must be Widget, Widget Pro, or Widget Xtreme)');
     }
 
-    if (!(widgetColor) || widgetColor == "Select"){
-        errorList.push("Please Select Widget Color(Must be red, blue, or yellow)");
+    if (!(widgetColor) || widgetColor == 'Select'){
+        errorList.push('Please Select Widget Color(Must be red, blue, or yellow)');
     }
 
     if (!(widgetQuantity) || widgetQuantity == 0){
-        errorList.push("Please Select Widget Quantity (Must be greater than zero)");
+        errorList.push('Please Select Widget Quantity (Must be greater than zero)');
     }
 
     if (!(dateNeededBy)){
-        errorList.push("Please Select a Date to Deliver By (Must be at least a week from today)");
+        errorList.push('Please Select a Date to Deliver By (Must be at least a week from today)');
     }
 
     if (errorList.length > 0 ) {
@@ -87,23 +87,23 @@ export default class OrderWidget extends React.Component {
 
   sendWidget() {
     var data = {};
-    var submitUrl = "api/v1/widget_order";
-    var httpMethod = "POST";
-    var actionTaken = "created";
+    var submitUrl = 'api/v1/widget_order';
+    var httpMethod = 'POST';
+    var actionTaken = 'created';
 
     // Prepare payload
     data.type = this.state.widgetType;
     data.color = this.state.widgetColor;
     data.quantity = this.state.widgetQuantity;
     data.date_needed_by = this.state.dateNeededBy
-      ? moment(this.state.dateNeededBy).format("YYYY-MM-DD")
-      : moment().format("YYYY-MM-DD");
+      ? moment(this.state.dateNeededBy).format('YYYY-MM-DD')
+      : moment().format('YYYY-MM-DD');
     var errorList = [];
 
     $.ajax({
       url: submitUrl,
       type: httpMethod,
-      contentType: "application/json",
+      contentType: 'application/json',
       data: JSON.stringify(data),
       beforeSend: function() {
         this.setState({ isSaving: true });
@@ -113,7 +113,7 @@ export default class OrderWidget extends React.Component {
       }.bind(this),
       error: function(xhr, textStatus, error) {
         var errorList = [];
-        var defaultMsg = "A Database Error Occured, Please Contact Support";
+        var defaultMsg = 'A Database Error Occured, Please Contact Support';
         errorList.push(defaultMsg);
       }.bind(this),
       complete: function() {
@@ -153,49 +153,49 @@ export default class OrderWidget extends React.Component {
     var currentForm = null;
 
     switch (fieldType) {
-      case "widget_type":
+      case 'widget_type':
         currentForm = (
-          <FormGroup className="animated animatedFadeInUp fadeInUp">
+          <FormGroup className='animated animatedFadeInUp fadeInUp'>
             <ControlLabel>Enter the {fieldTitle}</ControlLabel>
             <FormControl
               name={fieldName}
-              componentClass="select"
-              value={fieldValue !== null ? fieldValue : "Select"}
+              componentClass='select'
+              value={fieldValue !== null ? fieldValue : 'Select'}
               onChange={this.handleChange}
             >
-              <option value="Select">Select</option>
-              <option value="Widget">Widget</option>
-              <option value="Widget Pro">Widget Pro</option>
-              <option value="Widget Xtreme">Widget Xtreme</option>
+              <option value='Select'>Select</option>
+              <option value='Widget'>Widget</option>
+              <option value='Widget Pro'>Widget Pro</option>
+              <option value='Widget Xtreme'>Widget Xtreme</option>
             </FormControl>
           </FormGroup>
         );
         break;
-      case "widget_color":
+      case 'widget_color':
         currentForm = (
-          <FormGroup className="animated animatedFadeInUp fadeInUp">
+          <FormGroup className='animated animatedFadeInUp fadeInUp'>
             <ControlLabel>Enter the Milestone {fieldTitle}</ControlLabel>
             <FormControl
               name={fieldName}
-              componentClass="select"
-              value={fieldValue !== null ? fieldValue : "Select"}
+              componentClass='select'
+              value={fieldValue !== null ? fieldValue : 'Select'}
               onChange={this.handleChange}
             >
-              <option value="Select">Select</option>
-              <option value="red">red</option>
-              <option value="blue">blue</option>
-              <option value="yellow">yellow</option>
+              <option value='Select'>Select</option>
+              <option value='red'>red</option>
+              <option value='blue'>blue</option>
+              <option value='yellow'>yellow</option>
             </FormControl>
           </FormGroup>
         );
         break;
-      case "widget_quantity":
+      case 'widget_quantity':
         currentForm = (
-          <FormGroup className="animated animatedFadeInUp fadeInUp">
+          <FormGroup className='animated animatedFadeInUp fadeInUp'>
             <ControlLabel>Enter the {fieldTitle} (Must be greater than zero)</ControlLabel>
             <br/>
             <NumericInput
-              className="form-control"
+              className='form-control'
               strict
               value={fieldValue !== null ? fieldValue : 0}
               onChange={e => this.handleChangeQuantity(e, fieldName)}
@@ -203,59 +203,59 @@ export default class OrderWidget extends React.Component {
           </FormGroup>
         );
         break;
-      case "date":
+      case 'date':
         currentForm = (
-          <FormGroup className="animated animatedFadeInUp fadeInUp">
+          <FormGroup className='animated animatedFadeInUp fadeInUp'>
             <ControlLabel>Enter the {fieldTitle} (Must be at least 1 week from today)</ControlLabel>
             <br/>
             &nbsp;
             <DatePicker
-              id={fieldName + "_" + fieldType}
+              id={fieldName + '_' + fieldType}
               name={fieldName}
               selected={fieldValue}
               onChange={e => this.handleChangeNoTarget(e, fieldName)}
               minDate={addDays(new Date(), 7)}
-              placeholderText="Click to select a date"
+              placeholderText='Click to select a date'
             />
           </FormGroup>
         );
         break;
       default:
         currentForm = (
-          <FormGroup className="animated animatedFadeInUp fadeInUp">
+          <FormGroup className='animated animatedFadeInUp fadeInUp'>
             <ControlLabel>Enter the {fieldTitle}</ControlLabel>
             <FormControl
               style={{
                 height: 200
               }}
-              id={fieldName + "_" + fieldType}
+              id={fieldName + '_' + fieldType}
               name={fieldName}
               componentClass={fieldType}
               placeholder={fieldTitle}
               onChange={this.handleChange}
-              value={fieldValue !== null ? fieldValue : ""}
+              value={fieldValue !== null ? fieldValue : ''}
             />
           </FormGroup>
         );
     }
 
     var editType = (
-      <div className="animated fadeIn">
+      <div className='animated fadeIn'>
         <Well
-          className="form-well"
-          id="project-info"
+          className='form-well'
+          id='project-info'
           style={{
             height: 400,
             width: 800
           }}
         >
-          <h3 className="offset-3">
+          <h3 className='offset-3'>
             {Array.isArray(fieldTitle)
               ? fieldTitle[fieldTitle.length - 1]
               : fieldTitle}
           </h3>
           <hr />
-          <div className="input-well">{currentForm}</div>
+          <div className='input-well'>{currentForm}</div>
         </Well>
       </div>
     );
@@ -277,27 +277,27 @@ export default class OrderWidget extends React.Component {
     var stateDict = this.state;
     var editingPanelConfig = [
       {
-        fieldTitle: "Widget Type",
-        fieldName: "widgetType",
-        fieldType: "widget_type",
+        fieldTitle: 'Widget Type',
+        fieldName: 'widgetType',
+        fieldType: 'widget_type',
         fieldValue: stateDict.widgetType
       },
       {
-        fieldTitle: "Widget Color",
-        fieldName: "widgetColor",
-        fieldType: "widget_color",
+        fieldTitle: 'Widget Color',
+        fieldName: 'widgetColor',
+        fieldType: 'widget_color',
         fieldValue: stateDict.widgetColor
       },
       {
-        fieldTitle: "Widget Quantity",
-        fieldName: "widgetQuantity",
-        fieldType: "widget_quantity",
+        fieldTitle: 'Widget Quantity',
+        fieldName: 'widgetQuantity',
+        fieldType: 'widget_quantity',
         fieldValue: stateDict.widgetQuantity
       },
       {
-        fieldTitle: "Date needed by",
-        fieldName: "dateNeededBy",
-        fieldType: "date",
+        fieldTitle: 'Date needed by',
+        fieldName: 'dateNeededBy',
+        fieldType: 'date',
         fieldValue: stateDict.dateNeededBy
       }
     ];
@@ -318,7 +318,7 @@ export default class OrderWidget extends React.Component {
     }
     var navInstance = (
       <Nav
-        bsStyle="pills"
+        bsStyle='pills'
         stacked={true}
         onSelect={this.handleSelectNavItem}
         activeKey={this.state.selectedKey}
@@ -334,7 +334,7 @@ export default class OrderWidget extends React.Component {
     );
 
     var errorAlert = (
-      <Alert bsStyle="danger" className="form-errors animated shake">
+      <Alert bsStyle='danger' className='form-errors animated shake'>
         <strong>The following errors occured:</strong>
         <br />
         <ul>
@@ -348,7 +348,7 @@ export default class OrderWidget extends React.Component {
     );
 
     var orderAgainButton = (
-      <Button bsStyle="default" onClick={this.refreshPage}>
+      <Button bsStyle='default' onClick={this.refreshPage}>
         Order Again
       </Button>
     );
@@ -367,18 +367,18 @@ export default class OrderWidget extends React.Component {
     );
 
     return (
-      <div className="main-container animated animatedFadeInUp fadeInUp">
+      <div className='main-container animated animatedFadeInUp fadeInUp'>
         {navInstance}
-        <div className="main-right stretch-page">
-          <h4>Order a Widget</h4>
+        <div className='main-right stretch-page'>
+          <h4>Welcome! Use the below form to order a Widget</h4>
           <br />
-          <form className="form-registration">
+          <form className='form-registration'>
             {this.state.isSaving ? (
               <div>
                 Ordering Widget..
                 <ReactLoading
-                  type="cylon"
-                  color="#000000"
+                  type='cylon'
+                  color='#000000'
                   height={50}
                   width={50}
                 />
@@ -391,11 +391,11 @@ export default class OrderWidget extends React.Component {
             <Button
               bsStyle={
                 this.state.selectedKey < editingPanelList.length
-                  ? "default"
-                  : "primary"
+                  ? 'default'
+                  : 'primary'
               }
-              type="button"
-              name="next/submit"
+              type='button'
+              name='next/submit'
               onClick={
                 this.state.selectedKey < editingPanelList.length
                   ? this.handleFormNext
@@ -403,15 +403,15 @@ export default class OrderWidget extends React.Component {
               }
             >
               {this.state.selectedKey < editingPanelList.length
-                ? "Next"
-                : "Submit"}
+                ? 'Next'
+                : 'Submit'}
             </Button>
             &nbsp;&nbsp;
             {this.state.selectedKey < editingPanelList.length ? (
               <Button
-                bsStyle={"primary"}
-                type="button"
-                name="submit"
+                bsStyle={'primary'}
+                type='button'
+                name='submit'
                 onClick={this.validateForm}
               >
                 Submit

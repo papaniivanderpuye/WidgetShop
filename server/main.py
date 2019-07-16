@@ -57,6 +57,13 @@ app = Flask(__name__,
 
 @app.route(api + version_route + '/widget_order', methods=['POST'])
 def create_widget_order():
+    """This function stores widget order in the configured mysql database.
+    Returns
+    -------
+    flask.wrappers.Response
+        returns http response of the success of failure in storing the widget order.
+
+    """
     try:
         type = _get_param(request, 'type', None)
         color = _get_param(request, 'color', None)
@@ -85,6 +92,20 @@ def create_widget_order():
 @app.route('/index.html', methods=['GET', 'POST'])
 @app.route('/<path:path>', methods=['GET', 'POST'])
 def index(path=None):
+    """This is the index function that returns the home page of the web app.
+
+    Parameters
+    ----------
+    path : str
+        path of url. Adding this to redirect any wrong url path
+        back to index(the default is None).
+
+    Returns
+    -------
+    flask.wrappers.Response
+        returns http response of index html page.
+
+    """
     resp = make_response(render_template(
         'index.html'
     ))
@@ -94,6 +115,23 @@ def index(path=None):
 
 
 def _get_param(req, param, default=None):
+    """Gets Paramers or Json Data from request.
+
+    Parameters
+    ----------
+    req : Flask.request
+        request to get data from.
+    param : str
+        string name of the data to obtain.
+    default : str/int/None
+        Default object to return if data was not found (the default is None).
+
+    Returns
+    -------
+    str/int/None
+        returns data obtained from request.
+
+    """
     """ Return param from incoming payload """
     if req.method == 'GET':
         if req.args:

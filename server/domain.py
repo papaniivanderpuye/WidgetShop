@@ -10,7 +10,6 @@ LOGGER = logging.getLogger('widget_shop')
 
 class WidgetOrder():
     '''Base Project Class'''
-
     def __init__(self, type=None, color=None, quantity=None, date_needed_by=None):
         self.type = type
         self.color = color

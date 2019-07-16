@@ -1,3 +1,5 @@
+#!/usr/bin/python2.7
+# Application UNIT TEST
 import logging
 import logging.config
 import mock
@@ -7,7 +9,7 @@ import unittest
 
 
 sys.path.insert(0, os.path.dirname(
-    os.path.realpath(__file__)) + '/../../')
+    os.path.realpath(__file__)) + '/../../../')
 
 from server.domain import *
 from server.exceptions import *
@@ -47,7 +49,7 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(results[0], 0)
 
     def test_wrong_widget_type(self):
-         '''Tests creating an order record'''
+         '''Tests order with wrong widget type'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget1',
@@ -60,7 +62,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4001)
 
     def test_None_widget_type(self):
-         '''Tests creating an order record'''
+         '''Tests order with `None` widget type'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type=None,
@@ -73,7 +75,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4001)
 
     def test_wrong_widget_color(self):
-         '''Tests creating an order record'''
+         '''Tests order with wrong widget color'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
@@ -86,7 +88,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4002)
 
     def test_None_widget_color(self):
-         '''Tests creating an order record'''
+         '''Tests order with `None` widget color'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
@@ -99,7 +101,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4002)
 
     def test_wrong_widget_quantity(self):
-         '''Tests creating an order record'''
+         '''Tests order with wrong widget quantity'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
@@ -112,7 +114,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4003)
 
     def test_None_widget_quantity(self):
-         '''Tests creating an order record'''
+         '''Tests order with `None` widget quantity'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
@@ -125,7 +127,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4003)
 
     def test_None_date(self):
-         '''Tests creating an order record'''
+         '''Tests order with `None` widget date_needed_by'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
@@ -138,7 +140,7 @@ class TestApplication(unittest.TestCase):
          self.assertEqual(results[0], 4004)
 
     def test_wrong_dateformat(self):
-         '''Tests creating an order record'''
+         '''Tests database error wrong date_needed_by format'''
          data = widget_app.map_data_to_obj(
              WidgetOrder,
              type='Widget',
