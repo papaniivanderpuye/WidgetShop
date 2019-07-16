@@ -1,3 +1,7 @@
-static/lib/node_modules
+#Ignore File Extension
 *.pyc
-__pycache__
+
+static/node_modules/
+static/dist/
+.DS_Store
+nohub.out
