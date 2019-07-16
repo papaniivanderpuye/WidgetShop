@@ -58,3 +58,9 @@ The website will be in the url: http://localhost:1996/
 start inside the outermost folder of the directory(Which should be called WidgetShop)
    - `cd server/unit_tests/`
    - `nosetests --verbosity=2`
+   
+## Logs:
+All logs of Errors and Debug information should in this file:
+- `/var/log/widget_shop.log`
+You can moniter this by running the command:
+- `tail -f /var/log/widget_shop.log`
