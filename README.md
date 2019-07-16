@@ -10,8 +10,11 @@ It displayed a confirmation message after your order.
 
 In current directory:
 
+## Setup
+You will need Python2.7, Node.JS, and MySQL Server installed on your laptop
+
 ## setup database:
-you need to create a MySQL server locally on your laptop
+you need to start a MySQL server locally on your laptop
 
 access credentials to the database should be:
  - user: 'root'
