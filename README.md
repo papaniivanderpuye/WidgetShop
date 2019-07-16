@@ -61,6 +61,6 @@ start inside the outermost folder of the directory(Which should be called Widget
    
 ## Logs:
 All logs of Errors and Debug information should in this file:
-- `/var/log/widget_shop.log`
+- `/var/log/widget_shop.log` <br/>
 You can moniter this by running the command:
 - `tail -f /var/log/widget_shop.log`
