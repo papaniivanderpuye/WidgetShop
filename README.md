@@ -10,7 +10,7 @@ It displayed a confirmation message after your order.
 
 In current directory:
 
-setup database:
+## setup database:
 you need to create a MySQL server locally on your laptop
 
 access credentials to the database should be:
@@ -24,9 +24,9 @@ You also need to create a database and the required procedures in the server by 
 - `db/Procedures.sql`
 
 The python Flask app will access the server using those credentials if you want to the connection configuration, look at:
-server/config/config.py
+-`server/config/config.py`
 
-setup web app:
+## setup web app:
 - `npm install --prefix static`
 - `npm run build --prefix static`
 - `pip install -r server/requirements/requirements.txt`
