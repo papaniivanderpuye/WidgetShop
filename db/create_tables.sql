@@ -4,11 +4,11 @@ DROP TABLE IF EXISTS `WIDGET_ORDER`;
 
 CREATE TABLE `WIDGET_ORDER` (
     `ID` VARCHAR (36) NOT NULL,
-    `TYPE` enum('Widget','Widget Pro','Widget Xtreme') NOT NULL,
-    `COLOR` enum('red','blue','yellow') NOT NULL,
+    `TYPE` ENUM('Widget','Widget Pro','Widget Xtreme') NOT NULL,
+    `COLOR` ENUM('red','blue','yellow') NOT NULL,
     `QUANTITY` INT(11) DEFAULT NULL,
     `DATE_NEEDED_BY` DATE DEFAULT NULL,
-    `DATE_CREATED` DATETIME(6) NOT NULL DEFAULT NOW(6)
+    `DATE_CREATED` DATETIME(6) NOT NULL DEFAULT NOW(6),
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
