@@ -10,8 +10,8 @@ class Config(BaseConfigHandler):
     """
     class Development:
         DB_CONN = {
-            'user': 'root',
-            'password': 'PaNW^?DV9"zT,!^`',
+            'user': 'USER',
+            'password': 'PASSWORD',
             'host': 'localhost',
             'database': 'WIDGET_SHOP',
             'charset': 'utf8'
