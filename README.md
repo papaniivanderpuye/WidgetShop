@@ -21,8 +21,8 @@ Here are some websites to download these:
 you need to start a MySQL server locally on your laptop
 
 access credentials to the database should be:
- - user: 'root'
- - password: 'PaNW^?DV9"zT,!^`'
+ - user: '<YOUR_USERNAME>'
+ - password: '<YOUR_PASSWORD`'
  - host: 'localhost'
  - charset: 'utf8'
 
